@@ -13,23 +13,23 @@ internal class Value {
 	public ValueType type;
 	public readonly object value;
 	
-	public string AsString() {
-		return (string)value;
-	}
-	
-	public Value() {
-		value = null;
-		type = ValueType.Static;
-	}
+	public string AsString() => value.ToString();
 
-	public Value(object value) {
-		this.value = value;
-
+	public Value(object val) {
+		value = ConvertObject(val);
+		
 		type = value switch {
 			string str => GetType(str),
 			string[] => ValueType.ValueArray,
 			_ => type
 		};
+	}
+
+	protected static object ConvertObject(object value) {
+		if (value is not string str) return value;
+		if (value.Equals("NULL")) return null;
+		if (bool.TryParse(str, out bool b)) return b;
+		return str;
 	}
 
 	private static ValueType GetType(string value) {
@@ -40,13 +40,8 @@ internal class Value {
 		};
 	}
 	
-	
 	public override bool Equals(object obj) {
 		return Equals(obj, value) || Equals(obj, this);
-	}
-
-	protected bool Equals(Value other) {
-		return Equals(value, other.value);
 	}
 
 	public override int GetHashCode() {

@@ -89,7 +89,7 @@ public partial class Script {
 				return;
 			
 			case JumpIf:
-				if (EvaluateOperation(ins.value)) break;
+				if (EvaluateOperation((BoolExp)ins.value)) break;
 				pointer = ins.jump;
 				return;
 			
@@ -182,16 +182,27 @@ public partial class Script {
 	}
 	
 	// TODO: WIP
-	private bool EvaluateOperation(Value value) {
-		BooleanOperation op = (BooleanOperation)value;
-		return true;
+	private bool EvaluateOperation(BoolExp data) {
+		object a = ConvertOperationParameter(data.value);
+		object b = ConvertOperationParameter(data.other);
+		
+		Func<object, object, bool> func = boolOperations[data.operation];
+		return func.Invoke(a, b);
+	}
+
+	private object ConvertOperationParameter(object value) {
+		return value switch {
+			BoolExp operationA => EvaluateOperation(operationA),
+			string str when str[0] == '$' => GetVariable(str),
+			_ => value
+		};
 	}
 	
 	private void ExecuteCommand(string command, Value arg) {
 		string[] args = arg.type switch {
 			Static => new[] { arg.AsString() },
 			ValueArray => (string[])arg.value,
-			Operation => new[] { EvaluateOperation(arg) + "" },
+			Operation => new[] { EvaluateOperation((BoolExp)arg) + "" },
 			Variable => new[] { VariableToString(arg) },
 			External => new[] { ValueToExternalCall(arg) as string },
 			_ => null

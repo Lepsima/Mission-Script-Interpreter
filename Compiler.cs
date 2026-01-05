@@ -172,15 +172,15 @@ public partial class Script {
 		try {
 			line = line[conditional.Length..].Trim();
 			
-			BooleanOperation operation = BuildBooleanExpression(line);
-			instructions[i] = new Instruction(JumpIf, operation, jumpTo);
+			BoolExp expression = BuildBoolExpression(line);
+			instructions[i] = new Instruction(JumpIf, expression, jumpTo);
 		}
 		catch (ScriptException) {
 			throw new ScriptException($"Boolean expression at line {i} is invalid.");
 		}
 	}
 
-	private static BooleanOperation BuildBooleanExpression(string str) {
+	private static BoolExp BuildBoolExpression(string str) {
 		int index = 0;
 
 		// Simple 3-parameter expression, no recursive parenthesis
@@ -196,11 +196,11 @@ public partial class Script {
 			}
 			
 			string sa = split[0], sb = split[2], op = split[1];
-			return new BooleanOperation(sa, sb, op);
+			return new BoolExp(sa, sb, op);
 		}
 
 		// Handle recursive parenthesis
-		BooleanOperation expression = null;
+		BoolExp expression = null;
 		string operation = null;
 		
 		while (index < str.Length) {
@@ -213,7 +213,7 @@ public partial class Script {
 					throw new ScriptException();
 				}
 				
-				operation = str.Substring(index, closeIndex - index);
+				operation = str.Substring(index, closeIndex - index).Trim();
 				index = closeIndex;
 				continue;
 			}
@@ -223,11 +223,12 @@ public partial class Script {
 			if (closeIndex == -1) {
 				throw new ScriptException();
 			}
-			
-			string inside = str.Substring(index + 1,  closeIndex - index);
-			BooleanOperation op = BuildBooleanExpression(inside);
 
-			expression = expression != null ? new BooleanOperation(expression, op, operation) : op;
+			int start = index + 1;
+			string inside = str.Substring(start,  closeIndex - start);
+			BoolExp other = BuildBoolExpression(inside);
+
+			expression = expression != null ? new BoolExp(expression, other, operation) : other;
 			index = closeIndex + 1;
 		}
 
