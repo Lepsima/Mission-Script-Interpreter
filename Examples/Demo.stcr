@@ -29,4 +29,3 @@ func OnTargetChange
     weapon &MAX_RANGE
     targetPriority &TARGET
 func END
-

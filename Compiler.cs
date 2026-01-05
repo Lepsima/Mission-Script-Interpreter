@@ -53,6 +53,11 @@ public partial class Script {
 			}
 			
 			lines[i] = lines[i].Trim();
+
+			// Auto-generates the jump out of the if condition
+			if (lines[i].StartsWith("else")) {
+				lines.Insert(i, "stopif");
+			}
 		}
 		
 		// Get header information
@@ -79,7 +84,9 @@ public partial class Script {
 		instructions = new Instruction[lines.Count];
 		
 		// Goes from bottom to top so if/else's have a reference of where to jump to
-		int lastIfIndex = -1;
+		int previousIfIndex = -1;
+		int finalIfIndex = -1;
+		
 		for (int i = lines.Count - 1; i >= 0; i--) {
 			string line = lines[i];
 			string[] args = line.Split(' ');
@@ -110,18 +117,34 @@ public partial class Script {
 					instructions[i] = new Instruction(type, line[5..]);
 					break;
 
+				// Start of the if condition, jump to next elseif when failed
 				case "if":
-					CompileConditional(line, "if", lastIfIndex, i);
-					lastIfIndex = -1;
+					CompileConditional(line, "if", previousIfIndex, i);
+					previousIfIndex = -1;
+					finalIfIndex = -1;
 					break;
 
+				// Jump to here when last if/elseif fails, and check again
 				case "elseif":
-					CompileConditional(line, "elseif", lastIfIndex, i);
-					lastIfIndex = i;
+					CompileConditional(line, "elseif", previousIfIndex, i);
+					previousIfIndex = i;
 					break;
 				
+				// All if's should jump here when failed, will execute without condition
+				case "else":
+					instructions[i] = new Instruction(Ignore);
+					previousIfIndex = i;
+					break;
+				
+				// Auto-generates before each else/elseif to jump out when complete
+				case "stopif":
+					instructions[i] = new Instruction(Jump, finalIfIndex);
+					break;
+				
+				// Endpoint of the if condition, all jumps lead here
 				case "endif":
-					lastIfIndex = i;
+					previousIfIndex = i;
+					finalIfIndex = i;
 					instructions[i] = new Instruction(Ignore);
 					break;
 				
@@ -134,7 +157,7 @@ public partial class Script {
 		}
 		
 		// Convert checkpoint references to proper line jumps
-		foreach (Instruction i in instructions.Where(i => i.type == Jump)) {
+		foreach (Instruction i in instructions.Where(i => i.type == Jump && i.key != null)) {
 			i.jump = checkpoints[i.key];
 			i.key = "";
 		}

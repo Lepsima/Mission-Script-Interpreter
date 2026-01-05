@@ -42,7 +42,13 @@ public partial class Script {
 	}
 
 	private object CallExternal(string name, string arg) {
-		Debug.Log(name + "(\"" + arg + "\")");
+		string str = arg[0] switch {
+			'$' => GetVariable(arg).ToString(),
+			'@' => StringToExternalCall(arg) as string,
+			_ => arg
+		};
+		
+		Debug.Log(name + "(" + str + ")");
 		return null;
 	}
 
@@ -138,7 +144,7 @@ public partial class Script {
 	}
 
 	private string VariableToString(Value value) {
-		return GetVariable(value.AsString())?.ToString();
+		return GetVariable(value.ToString())?.ToString();
 	}
 
 	private void SetVariable(string name, object value) {
@@ -166,7 +172,7 @@ public partial class Script {
 	
 	private object ValueToExternalCall(Value value) {
 		string call = value.type switch {
-			Static => value.AsString(),
+			Static => value.ToString(),
 			Variable => VariableToString(value),
 			_ => null
 		};
@@ -181,7 +187,6 @@ public partial class Script {
 		return CallExternal(name, arg);
 	}
 	
-	// TODO: WIP
 	private bool EvaluateOperation(BoolExp data) {
 		object a = ConvertOperationParameter(data.value);
 		object b = ConvertOperationParameter(data.other);
@@ -193,14 +198,14 @@ public partial class Script {
 	private object ConvertOperationParameter(object value) {
 		return value switch {
 			BoolExp operationA => EvaluateOperation(operationA),
-			string str when str[0] == '$' => GetVariable(str),
+			string str => str[0] == '$' ? GetVariable(str).value : str,
 			_ => value
 		};
 	}
 	
 	private void ExecuteCommand(string command, Value arg) {
 		string[] args = arg.type switch {
-			Static => new[] { arg.AsString() },
+			Static => new[] { arg.ToString() },
 			ValueArray => (string[])arg.value,
 			Operation => new[] { EvaluateOperation((BoolExp)arg) + "" },
 			Variable => new[] { VariableToString(arg) },

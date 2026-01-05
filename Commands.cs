@@ -41,7 +41,7 @@ public partial class Script {
 		// Sleeps the program for X seconds
 		{ "wait", (script, args) => {
 			string timeStr = args[0][0] switch {
-				'$' => script.GetVariable(args[0]).AsString(),
+				'$' => script.GetVariable(args[0]).ToString(),
 				'@' => script.StringToExternalCall(args[0]) as string,
 				_ => args[0]
 			};

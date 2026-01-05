@@ -1,0 +1,17 @@
+﻿STCR v0
+
+### START
+set $Check "ValueA"
+
+checkpoint Loop
+
+if ($Check is "ValueA")
+    set $Check "ValueB"
+else
+    set $Check "ValueA"
+endif
+
+call @Print($Check)
+
+wait 1
+jump Loop

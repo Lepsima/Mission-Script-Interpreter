@@ -22,6 +22,11 @@ internal class Instruction {
 		this.type = type;
 	}
 	
+	public Instruction(InstructionType type, int jump) {
+		this.type = type;
+		this.jump = jump;
+	}
+
 	public Instruction(InstructionType type, string key) {
 		this.type = type;
 		this.key = key;

@@ -13,7 +13,7 @@ internal class Value {
 	public ValueType type;
 	public readonly object value;
 	
-	public string AsString() => value.ToString();
+	public override string ToString() => value.ToString();
 
 	public Value(object val) {
 		value = ConvertObject(val);
