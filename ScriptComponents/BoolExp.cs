@@ -1,7 +1,7 @@
 ﻿namespace STCR {
 internal class BoolExp : Value {
-	public object other;
-	public string operation;
+	public readonly object other;
+	public readonly string operation;
 	
 	public BoolExp(string a, string b, string op) : base(a) {
 		other = ConvertObject(b);

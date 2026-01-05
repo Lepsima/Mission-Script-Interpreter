@@ -1,5 +1,4 @@
-﻿using UnityEditor;
-using UnityEditor.AssetImporters;
+﻿using UnityEditor.AssetImporters;
 using UnityEngine;
 
 [ScriptedImporter(1, "stcr")]

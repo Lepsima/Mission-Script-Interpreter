@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 using static STCR.Instruction.InstructionType;
 
 namespace STCR {
@@ -52,7 +51,7 @@ public partial class Script {
 				continue;
 			}
 			
-			lines[i] = lines[i].Trim();
+			lines[i] = lines[i].Trim().Replace(';', ' ');
 
 			// Auto-generates the jump out of the if condition
 			if (lines[i].StartsWith("else")) {

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using static STCR.Value.ValueType;
 
 namespace STCR {
 public partial class Script {

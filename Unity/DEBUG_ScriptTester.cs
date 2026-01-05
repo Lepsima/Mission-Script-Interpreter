@@ -1,5 +1,4 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace STCR {
 public class DEBUG_ScriptTester : MonoBehaviour {
