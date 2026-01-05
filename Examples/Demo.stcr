@@ -1,0 +1,32 @@
+﻿STCR v0
+
+### START
+approach @Waypoint("meetup")
+formation @Squadron("leader")
+target NULL
+altitude 10000
+speed 600
+
+
+### MISSION_CHANGE
+set $Target NULL
+onEvent $Target OnTargetChange
+
+checkpoint Loop
+set $Target @Scan(&TARGET, &MAX_RANGE, &ENEMY)
+wait 2
+jump Loop
+
+func OnTargetChange
+    approach $Target
+    formation NULL
+    target $Target
+    
+    altitude $Target
+    speed $Target
+    afterburner true
+    
+    weapon &MAX_RANGE
+    targetPriority &TARGET
+func END
+

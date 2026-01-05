@@ -1,0 +1,128 @@
+﻿STCR v0
+
+// Calling a segment will immediately jump to it
+// The next segment will NOT start automatically
+// Segments divide stages of the mission
+### SEGMENT_CONTROL_COMMANDS
+
+// Basic comands change the settings of the NPC AI on the fly 
+name "Some NPC"
+speed 600
+
+// The C# backend will recieve a string[] containing all the parameters 
+moveXY 254 512
+
+
+
+
+### BASIC_FUNCTIONS
+// Calling a function, no parameters and no return value
+call Internalfunction
+
+// @ indicates an EXTERNAL FUNCTION, these provided by the game's source code
+// These functions CAN have both PARAMETERS and OUTPUT
+approach @Waypoint("waypoint-1")
+
+
+
+
+### BASIC_VARIABLES
+// "set" changes the value of a variable (indicated by $)
+// The value to set can be another variable or the output of an external function
+set $VariableA 1000
+set $VariableB $VariableA
+set $VariableC @Waypoint("waypoint-2")
+
+
+
+
+### FUNCTION_OUTPUT
+// "call" allows to directly call the function
+// The return value is stored inside "$EXT_OUT"
+call @Waypoint("waypoint-3")
+set $ThisFunctionOutput $EXT_OUT
+
+// "call" is better suited for no-return
+call @Print("Hello World")
+
+
+
+
+### VARIABLES_2
+// The value of variables is PERSISTENT through the entire LIFETIME of the script
+// This sets speed to the value of $VariableB (1000)
+speed $VariableB
+
+// "onEvent" triggers the function on the right when the value of the VARIABLE changes
+// Events, the same as variables, are PERSISTENT.
+onEvent $VariableB OnVariableEventFunc
+set $VariableB 2000
+
+// Setting a new event to the same variable will override the last, NULL can be used
+onEvent $VariableB ThisWillOverride
+onEvent $VariableB NULL
+
+// Clear all variables AND their events
+clearVariables
+
+
+
+
+### EXTERNAL_EVENTS
+// "&" indicates an external KEYWORD, for example &moveXY indicates when the command "moveXY" arrives at it's destination
+// Those two are separate from each other, the only thing linking them is the custom C# behind it
+// So, when the NPC arrives at 100, 200, the scipt function "OnArrival" will trigger and cause an interruption
+moveXY 100 200
+onEvent &moveXY OnArrival
+
+// The same as variables, only ONE event per KEYWORD and you can clear them like so
+onEvent &moveXY ThisWillOverride
+onEvent &moveXY NULL
+clearEvents
+
+
+
+
+### UTILITIES
+// "wait" stops the program for X seconds
+// "waitEvent" stops until an external event is triggered, this will OVERRIDE any events for that KEYWORD
+wait 2
+waitEvent &moveXY
+
+// "checkpoints" are markers that allow you to jump to them from ANY part of the code
+// Using a chechpoint across functions or segments may CRASH the script, but you can :3
+checkpoint Loop
+
+// This will repeat forever every 2.5 seconds
+call LoopFunction
+wait 2.5
+
+// "jump" goes back to a certain checkpoint, "jump" is one directional, you cannot go back
+jump Loop
+
+
+
+
+// If the program runs into a function by accident it may crash
+// I use a segment to separate and keep the functions safe
+### FUNCTION_BARRIER
+
+// No parameters or return value, the scope of the function's name is always the whole script
+func InternalFunction
+    altitude 8000
+    speed 800
+func END
+
+// This function should be called by a variable event
+func VariableEventFunc
+    call @Print("A variable's value was changed!")
+func END
+
+// Triggers by external event
+func OnArrival
+    call @Print("Has arrived to destination!")
+func END
+
+func LoopFunction
+    call @Print("Loop!")
+func END
