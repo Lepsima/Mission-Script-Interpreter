@@ -20,18 +20,21 @@ public partial class Script {
 			// Variable events, triggered on value change
 			if (args[0][0] == '$') { 
 				script.SetVariableEvent(args[0], args[1]);
+				return;
 			}
 			
 			// Special events, external activation
-			else {
-				bool isNull = args[1].Equals(Null);
-				Action action = isNull ? null : () => script.CallInternal(args[1]);
-				script.SetSpecialEvent(args[0], action);
-			}
+			bool isNull = args[1].Equals(Null);
+			Action action = isNull ? null : () => script.CallInternal(args[1]);
+			script.SetSpecialEvent(args[0], action);
 		}},
 		
 		// Sleeps the program until the specified SPECIAL EVENT is called, NO variable events allowed
 		{ "waitEvent", (script, args) => {
+			if (args[0][0] != '&') {
+				throw new ScriptException("'waitEvent' command: external KEYWORD starting with '&' is required");
+			}
+			
 			// Sleep until special event triggers
 			script.SleepFor(999_999f);
 			script.SetSpecialEvent(args[0], () => script.SleepFor(-1));
@@ -39,15 +42,11 @@ public partial class Script {
 		
 		// Sleeps the program for X seconds
 		{ "wait", (script, args) => {
-			string timeStr = args[0][0] switch {
-				'$' => script.GetVariable(args[0]).ToString(),
-				'@' => script.StringToExternalCall(args[0]) as string,
-				_ => args[0]
-			};
-
-			if (timeStr == null) return;
-			script.SleepFor(float.Parse(timeStr, CultureInfo.InvariantCulture));
+			if (!script.TryGetStringValue(args[0], out string str))
+				return;
 			
+			float time = float.Parse(str, CultureInfo.InvariantCulture);
+			script.SleepFor(time);
 		}},
 		
 		// Sets a VARIABLE to a specific value, the source can be static, variable or external
@@ -60,13 +59,8 @@ public partial class Script {
 				throw new ScriptException("'set' command: first argument must be a variable");
 			}
 			
-			object a = args[1][0] switch {
-				'$' => script.GetVariable(args[1]),
-				'@' => script.StringToExternalCall(args[1]),
-				_ => args[1]
-			};
-
-			script.SetVariable(args[0], a);
+			object value = script.GetObjectValue(args[1]);
+			script.SetVariable(args[0], value);
 		}},
 	};
 }
