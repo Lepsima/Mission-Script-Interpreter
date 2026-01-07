@@ -1,0 +1,21 @@
+﻿STCR v0
+
+### START
+set $Check "ValueA"
+set $Ref NULL
+
+checkpoint Loop
+
+if ($Check is "ValueA")
+    set $Check "ValueB"
+    set $Ref "NoReference"
+else
+    set $Check "ValueA"
+    set $Ref @This()
+endif
+
+call @Print($Check)
+call @Print($Ref)
+
+wait 1
+jump Loop

@@ -118,7 +118,7 @@ public partial class Script {
 		object ConvertOperationParameter(object value) {
 			return value switch {
 				BoolExp operationA => EvaluateOperation(operationA),
-				string str => str[0] == '$' ? GetVariable(str).value : str,
+				string str => GetObjectValue(str),
 				_ => value
 			};
 		}
@@ -163,38 +163,36 @@ public partial class Script {
 	}
 	
 	private object GetObjectValue(string arg) {
+		if (arg == null) return null;
+		if (arg.Length == 0) return "";
+		
 		return arg[0] switch {
 			'$' => GetVariable(arg),
 			'@' => CallExternal(arg),
+			'"' => arg[1..^1],
 			_ => arg
 		};
 	}
 	
 	private string GetStringValue(string arg) {
+		if (arg == null) return null;
+		if (arg.Length == 0) return "";
+		
 		return arg[0] switch {
 			'$' => GetVariable(arg).ToString(),
 			'@' => CallExternal(arg) as string,
+			'"' => arg[1..^1],
 			_ => arg
 		};
 	}
 	
 	private bool TryGetObjectValue(string arg, out object value) {
-		value = arg[0] switch {
-			'$' => GetVariable(arg),
-			'@' => CallExternal(arg),
-			_ => arg
-		};
-		
+		value = GetObjectValue(arg);
 		return value != null;
 	}
 	
 	private bool TryGetStringValue(string arg, out string value) {
-		value = arg[0] switch {
-			'$' => GetVariable(arg).ToString(),
-			'@' => CallExternal(arg) as string,
-			_ => arg
-		};
-		
+		value = GetStringValue(arg);
 		return value != null;
 	}
 #endregion

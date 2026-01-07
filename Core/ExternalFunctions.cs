@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace STCR {
@@ -9,6 +10,10 @@ public partial class Script {
 			Debug.Log(args[0]);
 			return null;
 		}},
+		{"@This", (script, args) => {
+			return script;
+		}},
+		
 	};
 }
 }

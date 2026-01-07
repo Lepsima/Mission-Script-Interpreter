@@ -12,8 +12,13 @@ internal class Value {
 
 	public ValueType type;
 	public readonly object value;
-	
-	public override string ToString() => value.ToString();
+
+	public override string ToString() {
+		if (value is string str) {
+			return str[0] == '"' ? str[1..^1] : str;
+		}
+		return value.ToString();
+	}
 
 	public Value(object val) {
 		value = ConvertObject(val);
