@@ -48,15 +48,16 @@ func OnTargetChange
 func END
 ```
 
-# Custom commands/operators Template
+# Custom commands/operators/functions Template
 This repository doesn't include any of the commands i use for my project, only the essentials needed to run the script are present. <br>
-Custom made Commands / Conditional operators are needed and can be added as shown here:
+Custom made Commands / Conditional operators / External functions are needed and can be added as shown here:
 ```csharp
 namespace STCR {
 public partial class Script {
 	static Script() {
 		AddCommands();
 		AddOperators();
+		AddExternal();
 	}
 
 	private static void AddCommands() {
@@ -90,6 +91,14 @@ public partial class Script {
 
 			// Always return bool value
 			return numberA < numberB;
+		});
+	}
+
+	private static void AddExternal() {
+		// Example usage "if (100 greater 50)"
+		externalFunctions.Add("@GetFoo", (script, args) => {
+			Debug.Log("GetFoo Called!");
+			return "foo";
 		});
 	}
 }
