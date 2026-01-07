@@ -50,6 +50,10 @@ public partial class Script {
 	}
 
 	private void Run() {
+		if (pointer < 0 || pointer >= instructions.Length) {
+			throw new ScriptException("End of segment");
+		}
+		
 		foreach (string trigger in variableTriggers) {
 			if (trigger[0] == '@') {
 				CallExternal(trigger);
@@ -133,7 +137,7 @@ public partial class Script {
 			External => new[] { CallExternal(arg) as string },
 			_ => null
 		};
-
+		
 		commands[command].Invoke(this, args);
 	}
 	
@@ -227,6 +231,9 @@ public partial class Script {
 	private object CallExternal(string name, string arg) {
 		if (!externalFunctions.TryGetValue(name, out Func<Script, object[], object> func))
 			return null;
+
+		if (string.IsNullOrEmpty(arg))
+			return func(this, new object[] { "" });
 		
 		object[] args = arg.Split(',').Select(GetObjectValue).ToArray();
 		return func(this, args);
@@ -235,7 +242,7 @@ public partial class Script {
 	private object CallExternal(string stringCall) {
 		string[] split = stringCall.Split('(');
 		string name = split[0];
-		string arg = split[1][..^1];
+		string arg = split.Length == 1 ? "" : split[1][..^1];
 		return CallExternal(name, arg);
 	}
 	

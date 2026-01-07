@@ -13,7 +13,6 @@ public partial class Script {
 		{"@This", (script, args) => {
 			return script;
 		}},
-		
 	};
 }
 }

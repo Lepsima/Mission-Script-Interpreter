@@ -19,3 +19,14 @@ call @Print($Ref)
 
 wait 1
 jump Loop
+
+### REFERENCE_COMPARE
+
+set $Ref1 @This
+set $Ref2 @This
+
+if ($Ref1 is $Ref2) 
+    call @Print("SameValue")
+else
+    call @Print("NotSameValue")
+endif
