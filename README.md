@@ -95,7 +95,8 @@ public partial class Script {
 	}
 
 	private static void AddExternal() {
-		// Example usage "if (100 greater 50)"
+		// Returns a string, args is of type "object[]", may contain reference values
+		// All variables have been evaluated, if you typed "$VariableA" it's value will replace it 
 		externalFunctions.Add("@GetFoo", (script, args) => {
 			Debug.Log("GetFoo Called!");
 			return "foo";
