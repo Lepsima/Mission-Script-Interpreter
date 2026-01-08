@@ -1,2 +1,6 @@
 ﻿LICENSE.meta
 README.md.meta
+Program.cs
+obj
+bin
+STCR.csproj
