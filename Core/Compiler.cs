@@ -13,7 +13,9 @@ public partial class Script {
 	private readonly Dictionary<string, int> checkpoints = new();
 	private readonly Dictionary<string, int> functions = new();
 
-	public Script(string code) {
+	public Script(IScriptRunner runner, string code) {
+		this.runner = runner;
+		
 		// Split to lines
 		List<string> lines = code.Split(
 			new[] { Environment.NewLine },
@@ -40,7 +42,7 @@ public partial class Script {
 	}
 
 	private bool IsCompatibleVersion() {
-		return version > -1;
+		return version > ctx.version;
 	}
 	
 	private void VerifyVersion(ref List<string> lines) {
@@ -51,7 +53,7 @@ public partial class Script {
 				continue;
 			}
 			
-			lines[i] = lines[i].Trim().Replace(';', ' ');
+			lines[i] = lines[i].Trim().Replace(";", "");
 
 			// Auto-generates the jump out of the if condition
 			if (lines[i].StartsWith("else")) {
@@ -60,16 +62,17 @@ public partial class Script {
 		}
 		
 		// Get header information
-		if (!lines[0].StartsWith("STCR")) {
+		string[] header = lines[0].Split(' ');
+		if (!header[0].Equals("STCR")) {
 			throw new ScriptException(
 				"The file must contain as a first line: 'STCR v0' replacing '0' with the script's version");
 		}
 		
-		int versionStart = lines[0].IndexOf('v');
-		string versionStr = lines[0][(versionStart + 1)..];
+		// Parse and validate header version and context
+		ctx = ContextDatabase.GetContext(header[2].Trim());
 		lines.RemoveAt(0);
 		
-		// Parse and validate version
+		string versionStr = header[1][1..^1];
 		if (!int.TryParse(versionStr, out version)) {
 			throw new ScriptException("The STCR version is not a valid integer.");
 		}

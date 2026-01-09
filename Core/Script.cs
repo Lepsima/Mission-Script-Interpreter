@@ -26,14 +26,11 @@ public partial class Script {
 	private ScriptContext ctx;
 	private Coroutine routine;
 	
-	public void CallSegment(IScriptRunner runner, string name) {
+	public void CallSegment(string name) {
 		if (!segments.TryGetValue(name, out int segmentIndex)) {
 			Debug.LogError("Call Segment error: Segment with name: " + name + " does not exist");
 			return;
 		}
-		
-		this.runner = runner;
-		ctx = runner.Context();
 
 		pointer = segmentIndex;
 		pointer++;

@@ -1,5 +1,6 @@
 ﻿namespace STCR {
 public partial class ScriptContext {
-	public string contextName;
+	public string context;
+	public int version;
 }
 }
