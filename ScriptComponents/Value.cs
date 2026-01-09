@@ -14,10 +14,11 @@ internal class Value {
 	public readonly object value;
 
 	public override string ToString() {
-		if (value is string str) {
-			return str[0] == '"' ? str[1..^1] : str;
-		}
-		return value.ToString();
+		return value switch {
+			null => "NULL",
+			string str => str[0] == '"' ? str[1..^1] : str,
+			_ => value.ToString()
+		};
 	}
 
 	public Value(object val) {

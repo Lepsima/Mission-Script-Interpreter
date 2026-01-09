@@ -8,7 +8,8 @@ using static STCR.Value.ValueType;
 
 namespace STCR {
 public partial class Script {
-	private const string EXTERNAL_OUTPUT_VARIABLE = "$EXT_OUT";
+	private const string EXTERNAL_CALL_OUTPUT = "$EXT_MAIN_OUT";
+	private const string EXTERNAL_SUBCALL_OUTPUT = "$EXT_SUB_OUT";
 	private const string Null = "NULL";
 
 	private int pointer;
@@ -26,10 +27,15 @@ public partial class Script {
 	private Coroutine routine;
 	
 	public void CallSegment(IScriptRunner runner, string name) {
+		if (!segments.TryGetValue(name, out int segmentIndex)) {
+			Debug.LogError("Call Segment error: Segment with name: " + name + " does not exist");
+			return;
+		}
+		
 		this.runner = runner;
 		ctx = runner.Context();
 
-		pointer = segments[name];
+		pointer = segmentIndex;
 		pointer++;
 	
 		routine ??= runner.StartCoroutine(Routine());
@@ -100,7 +106,7 @@ public partial class Script {
 			
 			case ExternalCall: {
 				object result = CallExternal(ins.key);
-				SetVariable(EXTERNAL_OUTPUT_VARIABLE, result);
+				SetVariable(EXTERNAL_CALL_OUTPUT, result);
 				break;
 			}
 			
@@ -139,10 +145,10 @@ public partial class Script {
 			ValueArray => (string[])arg.value,
 			Operation => new[] { EvaluateOperation((BoolExp)arg) + "" },
 			Variable => new[] { VariableToString(arg) },
-			External => new[] { CallExternal(arg) as string },
+			External => new[] { SubcallExternal(arg) },
 			_ => null
 		};
-		
+
 		commands[command].Invoke(this, args);
 	}
 	
@@ -176,7 +182,7 @@ public partial class Script {
 		if (arg.Length == 0) return "";
 		
 		return arg[0] switch {
-			'$' => GetVariable(arg),
+			'$' => GetVariable(arg).value,
 			'@' => CallExternal(arg),
 			'"' => arg[1..^1],
 			_ => arg
@@ -195,9 +201,16 @@ public partial class Script {
 		};
 	}
 	
-	private bool TryGetObjectValue(string arg, out object value) {
-		value = GetObjectValue(arg);
-		return value != null;
+	private bool TryGetObjectValue<T>(string arg, out T value) {
+		object obj = GetObjectValue(arg);
+
+		if (obj is T t) {
+			value = t;
+			return true;
+		}
+
+		value = default;
+		return false;
 	}
 	
 	private bool TryGetStringValue(string arg, out string value) {
@@ -231,6 +244,13 @@ public partial class Script {
 		if (!functions.TryGetValue(name, out int newPointer)) return;
 		pointer = newPointer;
 		functionOriginStack.Push(origin);
+	}
+	
+	// Calls external function and returns the output variable
+	private string SubcallExternal(Value value) {
+		object ret = CallExternal(value.ToString());
+		SetVariable(EXTERNAL_SUBCALL_OUTPUT, ret);
+		return EXTERNAL_SUBCALL_OUTPUT;
 	}
 	
 	private object CallExternal(string name, string arg) {
