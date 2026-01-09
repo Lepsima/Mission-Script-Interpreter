@@ -3,7 +3,7 @@
 namespace STCR {
 public class DEBUG_ScriptTester : MonoBehaviour, IScriptRunner {
 	public TextAsset script;
-	public DEBUG_DefaultContextProvider defaultContextProvider;
+	public ContextProvider defaultContextProvider;
 	public string segment;
 	public bool trigger = true;
 	
