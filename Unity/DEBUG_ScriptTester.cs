@@ -1,8 +1,9 @@
 ﻿using UnityEngine;
 
 namespace STCR {
-public class DEBUG_ScriptTester : MonoBehaviour {
+public class DEBUG_ScriptTester : MonoBehaviour, IScriptRunner {
 	public TextAsset script;
+	public DEBUG_DefaultContextProvider defaultContextProvider;
 	public string segment;
 	public bool trigger = true;
 	
@@ -17,5 +18,7 @@ public class DEBUG_ScriptTester : MonoBehaviour {
 		trigger = false;
 		program.CallSegment(this, segment);
 	}
+	
+	public ScriptContext Context() => defaultContextProvider.ctx;
 }
 }

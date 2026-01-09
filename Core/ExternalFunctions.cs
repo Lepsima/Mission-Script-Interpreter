@@ -9,9 +9,8 @@ public partial class Script {
 			Debug.Log(args[0]);
 			return null;
 		}},
-		{"@This", (script, args) => {
-			return script;
-		}},
+		{"@Script", (script, args) => script },
+		{"@This", (script, args) => script.runner },
 	};
 }
 }

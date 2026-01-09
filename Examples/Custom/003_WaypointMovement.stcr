@@ -1,0 +1,7 @@
+﻿STCR v0
+
+### START
+
+approach @Waypoint("WP_1")
+
+waitEvent &approach

@@ -22,8 +22,8 @@ jump Loop
 
 ### REFERENCE_COMPARE
 
-set $Ref1 @This
-set $Ref2 @This
+set $Ref1 @Script
+set $Ref2 @Script
 
 if ($Ref1 is $Ref2) 
     call @Print("SameValue")

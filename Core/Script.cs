@@ -21,13 +21,18 @@ public partial class Script {
 	private readonly HashSet<string> variableTriggers = new();
 	private readonly Stack<int> functionOriginStack = new();
 
+	private IScriptRunner runner;
+	private ScriptContext ctx;
 	private Coroutine routine;
 	
-	public void CallSegment(MonoBehaviour handler, string name) {
+	public void CallSegment(IScriptRunner runner, string name) {
+		this.runner = runner;
+		ctx = runner.Context();
+
 		pointer = segments[name];
 		pointer++;
 	
-		routine ??= handler.StartCoroutine(Routine());
+		routine ??= runner.StartCoroutine(Routine());
 	}
 
 	private IEnumerator Routine() {
