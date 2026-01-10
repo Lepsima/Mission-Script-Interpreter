@@ -23,8 +23,8 @@ public partial class Script {
 	private readonly Stack<int> functionOriginStack = new();
 
 	private readonly ScriptSource source;
+	private readonly ScriptContext ctx;
 	private IScriptRunner runner;
-	private ScriptContext ctx;
 	private Coroutine routine;
 
 	public Script(int id) : this(ScriptCompiler.GetSourceByID(id)) { }
