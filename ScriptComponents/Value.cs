@@ -1,5 +1,5 @@
 ﻿using System;
-using static STCR.Script;
+using static STCR.ScriptUtils;
 
 namespace STCR {
 internal class Value {

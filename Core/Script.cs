@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using UnityEngine;
 using static STCR.Instruction.InstructionType;
 using static STCR.Value.ValueType;
+using static STCR.ScriptUtils;
 
 namespace STCR {
 public partial class Script {
@@ -222,6 +224,17 @@ public partial class Script {
 		value = GetStringValue(arg);
 		return value != null;
 	}
+
+	private bool ArgToFloat(string arg, out float val) {
+		if (!TryGetStringValue(arg, out string str)) {
+			val = 0;
+			return false;
+		}
+		
+		val =  float.Parse(str, CultureInfo.InvariantCulture);
+		return true;
+	}
+	
 #endregion
 	
 #region - Events -
