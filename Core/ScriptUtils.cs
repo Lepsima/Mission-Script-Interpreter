@@ -1,6 +1,4 @@
-﻿using System.Globalization;
-
-namespace STCR {
+﻿namespace STCR {
 public static class ScriptUtils {
 	internal const char VARIABLE = '$';
 	internal const char KEYWORD = '&';
