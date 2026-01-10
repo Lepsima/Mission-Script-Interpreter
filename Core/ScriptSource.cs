@@ -13,6 +13,8 @@ public class ScriptSource {
 	private readonly Dictionary<string, int> checkpoints = new();
 	private readonly Dictionary<string, int> functions = new();
 		
+	internal ScriptContext ctx { get; private set; }
+	
 #region - Access -
 
 	internal bool TryGetSegment(string name, out int segmentIndex) {
@@ -86,7 +88,7 @@ public class ScriptSource {
 		}
 		
 		// Parse and validate header version and context
-	    ScriptContext ctx = ScriptContextDatabase.GetContext(header[2].Trim().ToLower());
+		ctx = ScriptContextDatabase.GetContext(header[2].Trim().ToLower());
 		lines.RemoveAt(0);
 		
 		string versionStr = header[1][1..];

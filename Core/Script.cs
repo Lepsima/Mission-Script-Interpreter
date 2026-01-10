@@ -31,6 +31,7 @@ public partial class Script {
 	
 	public Script(ScriptSource source) {
 		this.source = source;
+		ctx = source.ctx;
 	}
 	
 #region - Execution -
