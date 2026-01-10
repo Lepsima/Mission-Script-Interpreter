@@ -1,4 +1,5 @@
 ﻿using System;
+using static STCR.Script;
 
 namespace STCR {
 internal class Value {
@@ -15,8 +16,8 @@ internal class Value {
 
 	public override string ToString() {
 		return value switch {
-			null => "NULL",
-			string str => str[0] == '"' ? str[1..^1] : str,
+			null => NULL,
+			string str => str[0] == STRING ? str[1..^1] : str,
 			_ => value.ToString()
 		};
 	}
@@ -33,15 +34,15 @@ internal class Value {
 
 	protected static object ConvertObject(object value) {
 		if (value is not string str) return value;
-		if (value.Equals("NULL")) return null;
+		if (value.Equals(NULL)) return null;
 		if (bool.TryParse(str, out bool b)) return b;
 		return str;
 	}
 
 	private static ValueType GetType(string value) {
 		return value[0] switch {
-			'$' => ValueType.Variable,
-			'@' => ValueType.External,
+			VARIABLE => ValueType.Variable,
+			EXTERNAL => ValueType.External,
 			_ => ValueType.Static
 		};
 	}

@@ -18,20 +18,19 @@ public partial class Script {
 		// When an event triggers, the specified internal function is called
 		{ "onEvent", (script, args) => {
 			// Variable events, triggered on value change
-			if (args[0][0] == '$') { 
+			if (IsVariable(args[0])) { 
 				script.SetVariableEvent(args[0], args[1]);
 				return;
 			}
 			
 			// Special events, external activation
-			bool isNull = args[1].Equals(Null);
-			Action action = isNull ? null : () => script.CallInternal(args[1]);
+			Action action = IsNull(args[1]) ? null : () => script.CallInternal(args[1]);
 			script.SetSpecialEvent(args[0], action);
 		}},
 		
 		// Sleeps the program until the specified SPECIAL EVENT is called, NO variable events allowed
 		{ "waitEvent", (script, args) => {
-			if (args[0][0] != '&') {
+			if (!IsKeyword(args[0])) {
 				throw new ScriptException("'waitEvent' command: external KEYWORD starting with '&' is required");
 			}
 			
@@ -42,11 +41,9 @@ public partial class Script {
 		
 		// Sleeps the program for X seconds
 		{ "wait", (script, args) => {
-			if (!script.TryGetStringValue(args[0], out string str))
-				return;
-			
-			float time = float.Parse(str, CultureInfo.InvariantCulture);
-			script.SleepFor(time);
+			if (script.ArgToFloat(args[0], out float time)) {
+				script.SleepFor(time);
+			}
 		}},
 		
 		// Sets a VARIABLE to a specific value, the source can be static, variable or external
@@ -55,7 +52,7 @@ public partial class Script {
 				throw new ScriptException("'set' command: needs exactly two arguments");
 			}
 			
-			if (args[0][0] != '$') {
+			if (!IsVariable(args[0])) {
 				throw new ScriptException("'set' command: first argument must be a variable");
 			}
 			

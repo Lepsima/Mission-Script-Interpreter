@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
+using static STCR.Script;
 using static STCR.Instruction.InstructionType;
 
 namespace STCR {
@@ -131,10 +132,7 @@ public class ScriptSource {
 					break;
 				
 				case "call":
-					Instruction.InstructionType type = args[1].StartsWith('@')
-						? ExternalCall
-						: InternalCall;
-					
+					Instruction.InstructionType type = IsExternal(args[1]) ? ExternalCall : InternalCall;
 					instructions[i] = new Instruction(type, line[5..]);
 					break;
 

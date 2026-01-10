@@ -10,7 +10,6 @@ namespace STCR {
 public partial class Script {
 	private const string EXTERNAL_CALL_OUTPUT = "$EXT_MAIN_OUT";
 	private const string EXTERNAL_SUBCALL_OUTPUT = "$EXT_SUB_OUT";
-	private const string Null = "NULL";
 
 	private int pointer;
 	private float sleepTimer;
@@ -70,7 +69,7 @@ public partial class Script {
 
 	private void Run() {
 		foreach (string trigger in variableTriggers) {
-			if (trigger[0] == '@') {
+			if (IsExternal(trigger)) {
 				CallExternal(trigger);
 			}
 			else {
@@ -188,9 +187,9 @@ public partial class Script {
 		if (arg.Length == 0) return "";
 		
 		return arg[0] switch {
-			'$' => GetVariable(arg).value,
-			'@' => CallExternal(arg),
-			'"' => arg[1..^1],
+			VARIABLE => GetVariable(arg).value,
+			EXTERNAL => CallExternal(arg),
+			STRING => arg[1..^1],
 			_ => arg
 		};
 	}
@@ -200,9 +199,9 @@ public partial class Script {
 		if (arg.Length == 0) return "";
 		
 		return arg[0] switch {
-			'$' => GetVariable(arg).ToString(),
-			'@' => CallExternal(arg) as string,
-			'"' => arg[1..^1],
+			VARIABLE => GetVariable(arg).ToString(),
+			EXTERNAL => CallExternal(arg) as string,
+			STRING => arg[1..^1],
 			_ => arg
 		};
 	}
