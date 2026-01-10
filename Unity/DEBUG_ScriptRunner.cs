@@ -9,13 +9,17 @@ public class DEBUG_ScriptRunner : MonoBehaviour, IScriptRunner {
 	private Script program;
 	
 	private void Start() {
-		program = new Script(this, script.text);
+		// Compile
+		ScriptSource source = new(script);
+		
+		// Create instance
+		program = new Script(source);
 	}
 
 	private void Update() {
 		if (!trigger) return;
 		trigger = false;
-		program.CallSegment(segment);
+		program.CallSegment(this, segment);
 	}
 }
 }

@@ -1,5 +1,0 @@
-﻿STCR v0
-
-### START
-
-set $Target @Radar(&ENEMY,)

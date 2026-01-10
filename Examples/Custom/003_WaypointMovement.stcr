@@ -1,8 +1,0 @@
-﻿STCR v1 ;;AIRCRAFT;;
-
-### START
-
-approach @Waypoint("WP_1")
-waitEvent &approach
-
-call @Print("Done!")

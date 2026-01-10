@@ -22,16 +22,26 @@ public partial class Script {
 	private readonly HashSet<string> variableTriggers = new();
 	private readonly Stack<int> functionOriginStack = new();
 
+	private readonly ScriptSource source;
 	private IScriptRunner runner;
 	private ScriptContext ctx;
 	private Coroutine routine;
+
+	public Script(int id) : this(ScriptCompiler.GetSourceByID(id)) { }
 	
-	public void CallSegment(string name) {
-		if (!segments.TryGetValue(name, out int segmentIndex)) {
+	public Script(ScriptSource source) {
+		this.source = source;
+	}
+	
+#region - Execution -
+	
+	public void CallSegment(IScriptRunner runner, string name) {
+		if (!source.TryGetSegment(name, out int segmentIndex)) {
 			Debug.LogError("Call Segment error: Segment with name: " + name + " does not exist");
 			return;
 		}
 
+		this.runner = runner;
 		pointer = segmentIndex;
 		pointer++;
 	
@@ -58,10 +68,6 @@ public partial class Script {
 	}
 
 	private void Run() {
-		if (pointer < 0 || pointer >= instructions.Length) {
-			throw new ScriptException("End of segment");
-		}
-		
 		foreach (string trigger in variableTriggers) {
 			if (trigger[0] == '@') {
 				CallExternal(trigger);
@@ -72,7 +78,7 @@ public partial class Script {
 		}
 		
 		variableTriggers.Clear();
-		Instruction ins = instructions[pointer];
+		Instruction ins = source.GetInstruction(pointer);
 
 		switch (ins.type) {
 			case Checkpoint or Func or Ignore:
@@ -148,6 +154,8 @@ public partial class Script {
 
 		commands[command].Invoke(this, args);
 	}
+	
+#endregion
 	
 #region - Variables -
 	private string VariableToString(Value value) {
@@ -238,7 +246,7 @@ public partial class Script {
 	
 #region - Functions -
 	private void CallInternal(string name, int origin = -1) {
-		if (!functions.TryGetValue(name, out int newPointer)) return;
+		if (!source.TryGetFunction(name, out int newPointer)) return;
 		pointer = newPointer;
 		functionOriginStack.Push(origin);
 	}

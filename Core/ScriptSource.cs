@@ -5,17 +5,38 @@ using UnityEngine;
 using static STCR.Instruction.InstructionType;
 
 namespace STCR {
-public partial class Script {
+public class ScriptSource {
 	private int version;
 	private Instruction[] instructions;
 	
 	private readonly Dictionary<string, int> segments = new();
 	private readonly Dictionary<string, int> checkpoints = new();
 	private readonly Dictionary<string, int> functions = new();
-
-	public Script(IScriptRunner runner, string code) {
-		this.runner = runner;
 		
+#region - Access -
+
+	internal bool TryGetSegment(string name, out int segmentIndex) {
+		return segments.TryGetValue(name, out segmentIndex);
+	}
+
+	internal bool TryGetFunction(string name, out int functionIndex) {
+		return functions.TryGetValue(name, out functionIndex);
+	}
+
+	internal Instruction GetInstruction(int index) {
+		if (index < 0 || index >= instructions.Length) {
+			throw new ScriptException("End of segment");
+		}
+		return instructions[index];
+	}
+	
+#endregion
+	
+#region - Compilation -
+
+	public ScriptSource(TextAsset asset) : this(asset.text) { }
+	
+	public ScriptSource(string code) {
 		// Split to lines
 		List<string> lines = code.Split(
 			new[] { Environment.NewLine },
@@ -39,10 +60,6 @@ public partial class Script {
 			Debug.LogError(e);
 			Debug.LogError(output);
 		}
-	}
-
-	private bool IsCompatibleVersion() {
-		return version > ctx.version;
 	}
 	
 	private void VerifyVersion(ref List<string> lines) {
@@ -69,15 +86,15 @@ public partial class Script {
 		}
 		
 		// Parse and validate header version and context
-		ctx = ContextDatabase.GetContext(header[2].Trim());
+	    ScriptContext ctx = ScriptContextDatabase.GetContext(header[2].Trim().ToLower());
 		lines.RemoveAt(0);
 		
-		string versionStr = header[1][1..^1];
+		string versionStr = header[1][1..];
 		if (!int.TryParse(versionStr, out version)) {
 			throw new ScriptException("The STCR version is not a valid integer.");
 		}
 		
-		if (!IsCompatibleVersion()) {
+		if (version < ctx.version) {
 			throw new ScriptException("The specified STCR version is no longer compatible.");
 		}
 	}
@@ -259,5 +276,6 @@ public partial class Script {
 
 		return expression ?? throw new ScriptException();
 	}
+#endregion
 }
 }

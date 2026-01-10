@@ -2,11 +2,11 @@
 using UnityEngine;
 
 namespace STCR {
-public class ContextDatabase : MonoBehaviour {
-	public ContextBuilder[] builders;
+public class ScriptContextDatabase : MonoBehaviour {
+	private static ScriptContextDatabase Instance;
 
 	private readonly Dictionary<string, ScriptContext> scriptContexts = new();
-	private static ContextDatabase Instance;
+	private ContextBuilder[] builders;
 
 	private void Awake() {
 		if (Instance != null) {
@@ -14,10 +14,11 @@ public class ContextDatabase : MonoBehaviour {
 		}
 
 		Instance = this;
-
+		builders = GetComponentsInChildren<ContextBuilder>();
+		
 		foreach (ContextBuilder builder in builders) {
 			ScriptContext ctx = builder.BuildContext();
-			scriptContexts[ctx.context] = ctx;
+			scriptContexts[ctx.context.ToLower()] = ctx;
 		}
 	}
 
