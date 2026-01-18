@@ -41,7 +41,7 @@ public partial class Script {
 		
 		// Sleeps the program for X seconds
 		{ "wait", (script, args) => {
-			if (script.ArgToFloat(args[0], out float time)) {
+			if (script.TryGetFloatValue(args[0], out float time)) {
 				script.SleepFor(time);
 			}
 		}},

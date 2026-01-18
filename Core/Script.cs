@@ -225,7 +225,7 @@ public partial class Script {
 		return value != null;
 	}
 
-	private bool ArgToFloat(string arg, out float val) {
+	private bool TryGetFloatValue(string arg, out float val) {
 		if (!TryGetStringValue(arg, out string str)) {
 			val = 0;
 			return false;
