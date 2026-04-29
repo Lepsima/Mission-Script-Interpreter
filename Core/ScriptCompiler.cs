@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
-using Core;
+using Lepsima.Core;
+using Lepsima.Core.Math;
 using UnityEngine;
 
 namespace Lepsima.STCR {
