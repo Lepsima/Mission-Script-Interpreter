@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-namespace STCR {
+namespace Lepsima.STCR {
 public class ScriptContextDatabase : MonoBehaviour {
 	private static ScriptContextDatabase Instance;
 

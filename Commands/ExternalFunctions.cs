@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace STCR {
+namespace Lepsima.STCR {
 public partial class Script {
 	private static readonly Dictionary<string, Func<Script, object[], object>> externalFunctions = new() { 
 		{"@Print", (script, args) => {

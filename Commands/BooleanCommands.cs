@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace STCR {
+namespace Lepsima.STCR {
 public partial class Script {
 	private static readonly Dictionary<string, Func<object, object, bool>> boolOperations = new() { 
 		{"is", (a, b) => a.Equals(b) },

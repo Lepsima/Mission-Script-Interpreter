@@ -4,11 +4,11 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using UnityEngine;
-using static STCR.Instruction.InstructionType;
-using static STCR.Value.ValueType;
-using static STCR.ScriptUtils;
+using static Lepsima.STCR.Instruction.InstructionType;
+using static Lepsima.STCR.Value.ValueType;
+using static Lepsima.STCR.ScriptUtils;
 
-namespace STCR {
+namespace Lepsima.STCR {
 public partial class Script {
 	private const string EXTERNAL_CALL_OUTPUT = "$EXT_MAIN_OUT";
 	private const string EXTERNAL_SUBCALL_OUTPUT = "$EXT_SUB_OUT";

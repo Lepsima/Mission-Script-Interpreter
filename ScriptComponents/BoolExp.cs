@@ -1,4 +1,4 @@
-﻿namespace STCR {
+﻿namespace Lepsima.STCR {
 internal class BoolExp : Value {
 	public readonly object other;
 	public readonly string operation;

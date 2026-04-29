@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
-using static STCR.ScriptUtils;
-using static STCR.Instruction.InstructionType;
+using static Lepsima.STCR.ScriptUtils;
+using static Lepsima.STCR.Instruction.InstructionType;
 
-namespace STCR {
+namespace Lepsima.STCR {
 public class ScriptSource {
 	private int version;
 	private Instruction[] instructions;

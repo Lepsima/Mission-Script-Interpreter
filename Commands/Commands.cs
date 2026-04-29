@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using static STCR.ScriptUtils;
+using static Lepsima.STCR.ScriptUtils;
 
-namespace STCR {
+namespace Lepsima.STCR {
 public partial class Script {
 	private static readonly Dictionary<string, Action<Script, string[]>> commands = new() {
 		// Clears everything related to variables, their values and events

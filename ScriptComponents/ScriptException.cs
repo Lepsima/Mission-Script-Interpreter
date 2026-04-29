@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace STCR {
+namespace Lepsima.STCR {
 public class ScriptException : Exception {
 	public ScriptException() { }
 	public ScriptException(string message) : base(message) { }

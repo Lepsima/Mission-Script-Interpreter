@@ -1,4 +1,4 @@
-﻿namespace STCR {
+﻿namespace Lepsima.STCR {
 internal class Instruction {
 	public enum InstructionType {
 		Command, // Key, Value

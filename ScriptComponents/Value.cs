@@ -1,7 +1,7 @@
 ﻿using System;
-using static STCR.ScriptUtils;
+using static Lepsima.STCR.ScriptUtils;
 
-namespace STCR {
+namespace Lepsima.STCR {
 internal class Value {
 	public enum ValueType {
 		Static, // Value, string, number, etc

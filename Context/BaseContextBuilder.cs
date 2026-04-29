@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-namespace STCR {
+namespace Lepsima.STCR {
 public abstract class BaseContextBuilder : MonoBehaviour {
 	public int version;
 	public string context;

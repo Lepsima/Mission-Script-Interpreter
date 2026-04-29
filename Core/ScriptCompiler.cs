@@ -2,7 +2,7 @@
 using Core;
 using UnityEngine;
 
-namespace STCR {
+namespace Lepsima.STCR {
 public class ScriptCompiler : MonoBehaviour {
 	private static ScriptCompiler Instance;
 	private readonly Dictionary<int, ScriptSource> scripts = new();

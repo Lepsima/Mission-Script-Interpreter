@@ -1,4 +1,4 @@
-﻿namespace STCR {
+﻿namespace Lepsima.STCR {
 public static class ScriptUtils {
 	internal const char VARIABLE = '$';
 	internal const char KEYWORD = '&';

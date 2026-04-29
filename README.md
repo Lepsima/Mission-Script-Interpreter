@@ -51,7 +51,7 @@ func END
 This repository doesn't include any of the commands i use for my project, only the essentials needed to run the script are present. <br>
 Custom made Commands / Conditional operators / External functions are needed and can be added as shown here:
 ```csharp
-namespace STCR {
+namespace Lepsima.STCR {
 public partial class Script {
 	static Script() {
 		AddCommands();

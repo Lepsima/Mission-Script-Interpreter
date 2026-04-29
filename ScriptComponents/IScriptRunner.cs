@@ -1,7 +1,7 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-namespace STCR {
+namespace Lepsima.STCR {
 public partial interface IScriptRunner {
 	public Coroutine StartCoroutine(IEnumerator routine);
 }
